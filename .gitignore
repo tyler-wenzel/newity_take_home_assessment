@@ -1,3 +1,5 @@
 ai_log/
 project_decisions.md
 project_context
+backend/app.db
+backend/__pycache__/
