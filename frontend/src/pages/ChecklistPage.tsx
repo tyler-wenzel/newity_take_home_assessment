@@ -51,7 +51,7 @@ export function ChecklistPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="mx-auto max-w-5xl px-6 py-10">
       <p className="mb-6">
         <Link to="/" className="text-sm text-stone-500 hover:text-stone-800">
           Back to queue
@@ -65,17 +65,28 @@ export function ChecklistPage() {
         <p className="text-sm text-stone-500">Loading…</p>
       )}
       {error ? <p className="mb-4 text-sm text-red-700">{error}</p> : null}
-      <ul className="space-y-3">
-        {items.map((item) => (
-          <ChecklistItem
-            key={item.document_type}
-            item={item}
-            disabled={saving}
-            onStatusChange={(status) => update(item.document_type, { status })}
-            onCommentChange={(comment) => update(item.document_type, { comment })}
-          />
-        ))}
-      </ul>
+      <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+        <table className="w-full border-collapse text-left text-sm">
+          <thead className="bg-stone-50 text-xs font-medium uppercase tracking-wide text-stone-500">
+            <tr>
+              <th className="px-4 py-3">Document</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <ChecklistItem
+                key={item.document_type}
+                item={item}
+                disabled={saving}
+                onStatusChange={(status) => update(item.document_type, { status })}
+                onCommentChange={(comment) => update(item.document_type, { comment })}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   )
 }
