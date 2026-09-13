@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import csv
 import sqlite3
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
@@ -15,18 +15,30 @@ CSV_PATH = (
 )
 
 
+def _adapt_date(value: date) -> str:
+    return value.isoformat()
+
+
+def _convert_date(value: bytes) -> date:
+    return date.fromisoformat(value.decode())
+
+
+sqlite3.register_adapter(date, _adapt_date)
+sqlite3.register_converter("DATE", _convert_date)
+
+
 def get_connection() -> sqlite3.Connection:
-    connection = sqlite3.connect(DB_PATH)
+    connection = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 
-def _parse_date(value: str) -> Optional[str]:
+def _parse_date(value: str) -> Optional[date]:
     value = (value or "").strip()
     if not value:
         return None
-    return datetime.strptime(value, "%m/%d/%Y").date().isoformat()
+    return datetime.strptime(value, "%m/%d/%Y").date()
 
 
 def init_schema(connection: sqlite3.Connection) -> None:
@@ -37,7 +49,7 @@ def init_schema(connection: sqlite3.Connection) -> None:
             business_name TEXT NOT NULL UNIQUE,
             borrower_name TEXT NOT NULL,
             loan_amount INTEGER NOT NULL,
-            application_date TEXT NOT NULL,
+            application_date DATE NOT NULL,
             assigned_processor TEXT NOT NULL
         );
 
@@ -45,8 +57,8 @@ def init_schema(connection: sqlite3.Connection) -> None:
             application_id TEXT NOT NULL,
             document_type TEXT NOT NULL,
             document_status TEXT NOT NULL,
-            date_received TEXT,
-            expiration_date TEXT,
+            date_received DATE,
+            expiration_date DATE,
             notes TEXT NOT NULL DEFAULT '',
             PRIMARY KEY (application_id, document_type),
             FOREIGN KEY (application_id) REFERENCES applications (application_id)

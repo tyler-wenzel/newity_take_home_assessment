@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import date
+from datetime import date, datetime
 from typing import get_args
 
 from db import (
@@ -72,18 +72,20 @@ def _require_comment(comment: object) -> str:
     return comment
 
 
-def _parse_iso_date(value: object) -> date:
+def _as_date(value: object) -> date:
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
     if not isinstance(value, str) or not value:
-        raise InvalidInputError("date value is missing or not a string")
+        raise InvalidInputError("date value is missing or not a date")
     return date.fromisoformat(value)
 
 
-def _parse_optional_iso_date(value: object) -> date | None:
+def _as_optional_date(value: object) -> date | None:
     if value is None or value == "":
         return None
-    if not isinstance(value, str):
-        raise InvalidInputError("date value must be a string")
-    return date.fromisoformat(value)
+    return _as_date(value)
 
 
 def list_applications() -> list[ApplicationListItem]:
@@ -117,14 +119,13 @@ def list_applications() -> list[ApplicationListItem]:
             ApplicationListItem(
                 application_id=application_id,
                 borrower=borrower,
-                application_date=_parse_iso_date(row["application_date"]),
+                application_date=_as_date(row["application_date"]),
                 coordinator=coordinator,
                 outstanding=outstanding_by_borrower[borrower],
                 expired=expired_by_borrower[borrower],
             )
         )
 
-    items.sort(key=lambda item: item.outstanding, reverse=True)
     return items
 
 
@@ -179,8 +180,8 @@ def _to_application_detail(application, rows) -> ApplicationDetail:
             document_type=_require_document_type(row["document_type"]),
             status=_require_status(row["document_status"]),
             comment=_require_comment(row["notes"]),
-            date_received=_parse_optional_iso_date(row["date_received"]),
-            expiration_date=_parse_optional_iso_date(row["expiration_date"]),
+            date_received=_as_optional_date(row["date_received"]),
+            expiration_date=_as_optional_date(row["expiration_date"]),
         )
         for row in rows
     ]
@@ -200,7 +201,7 @@ def _to_application_detail(application, rows) -> ApplicationDetail:
         borrower=_require_borrower(application["business_name"]),
         borrower_name=borrower_name,
         loan_amount=loan_amount,
-        application_date=_parse_iso_date(application["application_date"]),
+        application_date=_as_date(application["application_date"]),
         coordinator=coordinator,
         items=items,
     )

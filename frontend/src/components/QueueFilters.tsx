@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import type { ApplicationListItem } from "../api/client"
+import { applyQueueFilters } from "../utils/applyQueueFilters"
+import { sortQueue, type QueueSort } from "../utils/sortQueue"
 
 type QueueFiltersProps = {
   applications: ApplicationListItem[]
@@ -9,41 +11,11 @@ type QueueFiltersProps = {
 const fieldClass =
   "mt-1.5 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-500 focus:ring-2 focus:ring-stone-200"
 
-function applyFilters(
-  applications: ApplicationListItem[],
-  search: string,
-  earliest: string,
-  latest: string,
-  coordinator: string,
-  expiredOnly: boolean,
-): ApplicationListItem[] {
-  const query = search.trim().toLowerCase()
-  return applications.filter((application) => {
-    if (query && !application.borrower.toLowerCase().includes(query)) {
-      return false
-    }
-    if (earliest && application.application_date < earliest) {
-      return false
-    }
-    if (latest && application.application_date > latest) {
-      return false
-    }
-    if (coordinator && application.coordinator !== coordinator) {
-      return false
-    }
-    if (expiredOnly && !application.expired) {
-      return false
-    }
-    return true
-  })
-}
-
 export function QueueFilters({ applications, onFiltered }: QueueFiltersProps) {
   const [search, setSearch] = useState("")
-  const [earliest, setEarliest] = useState("")
-  const [latest, setLatest] = useState("")
   const [coordinator, setCoordinator] = useState("")
   const [expiredOnly, setExpiredOnly] = useState(false)
+  const [sort, setSort] = useState<QueueSort>("outstanding")
 
   const coordinators = useMemo(
     () =>
@@ -52,12 +24,13 @@ export function QueueFilters({ applications, onFiltered }: QueueFiltersProps) {
   )
 
   useEffect(() => {
-    onFiltered(applyFilters(applications, search, earliest, latest, coordinator, expiredOnly))
-  }, [applications, search, earliest, latest, coordinator, expiredOnly, onFiltered])
+    const matched = applyQueueFilters(applications, { search, coordinator, expiredOnly })
+    onFiltered(sortQueue(matched, sort))
+  }, [applications, search, coordinator, expiredOnly, sort, onFiltered])
 
   return (
     <form
-      className="mb-6 grid grid-cols-1 items-end gap-4 rounded-lg border border-stone-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-5"
+      className="mb-6 grid grid-cols-1 items-end gap-4 rounded-lg border border-stone-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-4"
       onSubmit={(event) => event.preventDefault()}
     >
       <label className="text-xs font-medium text-stone-500">
@@ -70,22 +43,16 @@ export function QueueFilters({ applications, onFiltered }: QueueFiltersProps) {
         />
       </label>
       <label className="text-xs font-medium text-stone-500">
-        From
-        <input
+        Sort by
+        <select
           className={fieldClass}
-          type="date"
-          value={earliest}
-          onChange={(event) => setEarliest(event.target.value)}
-        />
-      </label>
-      <label className="text-xs font-medium text-stone-500">
-        To
-        <input
-          className={fieldClass}
-          type="date"
-          value={latest}
-          onChange={(event) => setLatest(event.target.value)}
-        />
+          value={sort}
+          onChange={(event) => setSort(event.target.value as QueueSort)}
+        >
+          <option value="outstanding">Most outstanding</option>
+          <option value="earliest">Application date: earliest</option>
+          <option value="latest">Application date: latest</option>
+        </select>
       </label>
       <label className="text-xs font-medium text-stone-500">
         Coordinator
