@@ -28,9 +28,9 @@ def get_applications() -> List[ApplicationListItem]:
     return _run(list_applications)
 
 
-@router.get("/applications/{borrower}", response_model=ApplicationDetail)
-def get_application_detail(borrower: str) -> ApplicationDetail:
-    return _run(lambda: get_application(borrower))
+@router.get("/applications/{application_id}", response_model=ApplicationDetail)
+def get_application_detail(application_id: str) -> ApplicationDetail:
+    return _run(lambda: get_application(application_id))
 
 
 @router.patch("/checklist-items", response_model=ApplicationDetail)

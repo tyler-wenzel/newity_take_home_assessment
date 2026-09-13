@@ -142,6 +142,36 @@ def _text_param(value: object, name: str) -> str:
     return value
 
 
+def fetch_application_by_id(
+    connection: sqlite3.Connection, application_id: str
+) -> Optional[sqlite3.Row]:
+    application_id = _text_param(application_id, "application_id")
+    return connection.execute(
+        """
+        SELECT application_id, business_name, borrower_name, loan_amount,
+               application_date, assigned_processor
+        FROM applications
+        WHERE application_id = ?
+        """,
+        (application_id,),
+    ).fetchone()
+
+
+def fetch_items_by_application_id(
+    connection: sqlite3.Connection, application_id: str
+) -> list[sqlite3.Row]:
+    application_id = _text_param(application_id, "application_id")
+    return connection.execute(
+        """
+        SELECT document_type, document_status, notes,
+               date_received, expiration_date
+        FROM checklist_items
+        WHERE application_id = ?
+        """,
+        (application_id,),
+    ).fetchall()
+
+
 def fetch_application_by_borrower(
     connection: sqlite3.Connection, borrower: str
 ) -> Optional[sqlite3.Row]:

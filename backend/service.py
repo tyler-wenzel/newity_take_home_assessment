@@ -6,8 +6,10 @@ from typing import get_args
 
 from db import (
     fetch_application_by_borrower,
+    fetch_application_by_id,
     fetch_applications,
     fetch_item_statuses,
+    fetch_items_by_application_id,
     fetch_items_by_borrower,
     get_connection,
     update_checklist_item,
@@ -32,6 +34,15 @@ class InvalidInputError(ValueError):
 
 class NotFoundError(LookupError):
     pass
+
+
+def _require_application_id(application_id: object) -> str:
+    if not isinstance(application_id, str):
+        raise InvalidInputError("application_id must be a string")
+    application_id = application_id.strip()
+    if not application_id:
+        raise InvalidInputError("application_id must be a non-empty string")
+    return application_id
 
 
 def _require_borrower(borrower: object) -> str:
@@ -101,8 +112,10 @@ def list_applications() -> list[ApplicationListItem]:
         coordinator = row["assigned_processor"]
         if not isinstance(coordinator, str):
             raise InvalidInputError("stored assigned_processor must be a string")
+        application_id = _require_application_id(row["application_id"])
         items.append(
             ApplicationListItem(
+                application_id=application_id,
                 borrower=borrower,
                 application_date=_parse_iso_date(row["application_date"]),
                 coordinator=coordinator,
@@ -115,14 +128,14 @@ def list_applications() -> list[ApplicationListItem]:
     return items
 
 
-def get_application(borrower: object) -> ApplicationDetail:
-    borrower = _require_borrower(borrower)
+def get_application(application_id: object) -> ApplicationDetail:
+    application_id = _require_application_id(application_id)
     connection = get_connection()
     try:
-        application = fetch_application_by_borrower(connection, borrower)
+        application = fetch_application_by_id(connection, application_id)
         if application is None:
             raise NotFoundError("application not found")
-        rows = fetch_items_by_borrower(connection, borrower)
+        rows = fetch_items_by_application_id(connection, application_id)
     finally:
         connection.close()
 

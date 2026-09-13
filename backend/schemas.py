@@ -36,6 +36,7 @@ OPEN_STATUSES: tuple[DocumentStatus, ...] = (
 
 
 class ApplicationListItem(BaseModel):
+    application_id: str
     borrower: str
     application_date: date
     coordinator: str
