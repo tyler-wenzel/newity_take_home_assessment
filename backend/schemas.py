@@ -34,38 +34,6 @@ OPEN_STATUSES: tuple[DocumentStatus, ...] = (
     "Received",
 )
 
-COMMENTS_BY_STATUS: dict[DocumentStatus, tuple[str, ...]] = {
-    "Pending": (
-        "",
-        "Borrower contacted via email",
-        "Waiting on borrower",
-        "Requested from borrower 2/3",
-        "Follow-up call scheduled",
-        "Second request sent",
-    ),
-    "Under Review": (
-        "",
-        "Reviewing for completeness",
-        "Verifying with third party",
-        "Minor discrepancy noted",
-    ),
-    "Expired": (
-        "Document expired - replacement requested",
-        "Expired - needs updated statements",
-    ),
-    "Not Required": (
-        "Waived per SBA guidelines",
-        "Not applicable for this loan type",
-        "Exempt - sole proprietorship",
-    ),
-    "Received": ("",),
-    "Approved": ("",),
-}
-
-ALLOWED_COMMENTS = frozenset(
-    comment for comments in COMMENTS_BY_STATUS.values() for comment in comments
-)
-
 
 class ApplicationListItem(BaseModel):
     vendor: str
@@ -105,6 +73,4 @@ class ChecklistItemPatch(BaseModel):
         has_comment = self.comment is not None
         if has_status == has_comment:
             raise ValueError("Provide exactly one of status or comment")
-        if has_comment and self.comment not in ALLOWED_COMMENTS:
-            raise ValueError("comment must be a canned note for a known status")
         return self
