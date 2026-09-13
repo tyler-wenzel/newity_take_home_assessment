@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import type { ApplicationListItem } from "../api/client"
 
 type QueueTableProps = {
@@ -11,6 +11,8 @@ function formatDate(value: string): string {
 }
 
 export function QueueTable({ applications }: QueueTableProps) {
+  const navigate = useNavigate()
+
   if (applications.length === 0) {
     return (
       <p className="rounded-lg border border-stone-200 bg-white px-4 py-8 text-center text-sm text-stone-500">
@@ -32,32 +34,41 @@ export function QueueTable({ applications }: QueueTableProps) {
           </tr>
         </thead>
         <tbody>
-          {applications.map((application) => (
-            <tr key={application.application_id} className="border-t border-stone-200">
-              <td className="px-4 py-3 text-base font-semibold tabular-nums text-stone-900">
-                {application.outstanding}
-              </td>
-              <td className="px-4 py-3 text-stone-600">
-                {formatDate(application.application_date)}
-              </td>
-              <td className="px-4 py-3">
-                <Link
-                  className="font-medium text-stone-900 underline-offset-2 hover:underline"
-                  to={`/applications/${application.application_id}`}
-                >
+          {applications.map((application) => {
+            const checklistPath = `/applications/${application.application_id}`
+            return (
+              <tr
+                className="cursor-pointer border-t border-stone-200 hover:bg-stone-50 focus:bg-stone-50 focus:outline-none"
+                key={application.application_id}
+                onClick={() => navigate(checklistPath)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault()
+                    navigate(checklistPath)
+                  }
+                }}
+                tabIndex={0}
+              >
+                <td className="px-4 py-3 text-base font-semibold tabular-nums text-stone-900">
+                  {application.outstanding}
+                </td>
+                <td className="px-4 py-3 text-stone-600">
+                  {formatDate(application.application_date)}
+                </td>
+                <td className="px-4 py-3 font-medium text-stone-900">
                   {application.borrower}
-                </Link>
-              </td>
-              <td className="px-4 py-3 text-stone-600">{application.coordinator}</td>
-              <td className="px-4 py-3">
-                {application.expired ? (
-                  <span className="inline-block rounded-full bg-stone-200 px-2 py-0.5 text-xs font-medium text-stone-800">
-                    Expired
-                  </span>
-                ) : null}
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="px-4 py-3 text-stone-600">{application.coordinator}</td>
+                <td className="px-4 py-3">
+                  {application.expired ? (
+                    <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                      Expired
+                    </span>
+                  ) : null}
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>
