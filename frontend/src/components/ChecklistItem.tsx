@@ -1,5 +1,5 @@
 import type { ChecklistItem as ChecklistItemData, DocumentStatus } from "../api/client"
-import { STATUSES, commentLabel, commentsFor } from "../statusComments"
+import { STATUSES, commentLabel, commentsFor, hasComments } from "../statusComments"
 
 type ChecklistItemProps = {
   item: ChecklistItemData
@@ -35,18 +35,20 @@ export function ChecklistItem({
         </select>
       </td>
       <td className="px-4 py-3">
-        <select
-          className={fieldClass}
-          value={item.comment}
-          disabled={disabled}
-          onChange={(event) => onCommentChange(event.target.value)}
-        >
-          {commentsFor(item.status, item.comment).map((comment) => (
-            <option key={comment || "blank"} value={comment}>
-              {commentLabel(comment)}
-            </option>
-          ))}
-        </select>
+        {hasComments(item.status) ? (
+          <select
+            className={fieldClass}
+            value={item.comment}
+            disabled={disabled}
+            onChange={(event) => onCommentChange(event.target.value)}
+          >
+            {commentsFor(item.status, item.comment).map((comment) => (
+              <option key={comment || "blank"} value={comment}>
+                {commentLabel(comment)}
+              </option>
+            ))}
+          </select>
+        ) : null}
       </td>
     </tr>
   )

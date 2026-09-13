@@ -46,6 +46,11 @@ const COMMENTS_BY_STATUS: Record<DocumentStatus, string[]> = {
   Approved: [""],
 }
 
+/** Received and Approved carry no canned notes, so their comment cell stays empty. */
+export function hasComments(status: DocumentStatus): boolean {
+  return COMMENTS_BY_STATUS[status].some((comment) => comment !== "")
+}
+
 export function commentsFor(status: DocumentStatus, current?: string): string[] {
   const options = COMMENTS_BY_STATUS[status]
   if (current !== undefined && !options.includes(current)) {
