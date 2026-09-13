@@ -1,0 +1,166 @@
+Product Engineer Assessment
+Take-Home Build & Ship Challenge
+
+
+Role:
+Product Engineer
+Format:
+Take-Home (your machine, your tools, your schedule)
+Level of Effort:
+3 – 4 hours (please do not exceed 4 hours)
+Deadline:
+[INSERT DEADLINE]
+Submit To:
+[INSERT EMAIL OR LINK]
+
+Welcome
+Thank you for your interest in the Product Engineer role at NEWITY. This assessment is designed to mirror how our team actually works. We don’t believe in contrived coding puzzles or whiteboard exercises. Instead, we want to see you build something real, the way you’d build it on the job.
+At NEWITY, our Product Engineers own the full lifecycle of a feature — from understanding the problem, to scoping and building, to testing and shipping, to reflecting on what’s next. We leverage AI tools across every step of that process. This assessment asks you to do the same.
+Time Expectation
+This assessment is designed to take 3–4 hours of focused work. We respect your time and ask that you do not spend more than 4 hours. We’d rather see a well-scoped, complete solution than a sprawling one. Knowing when to stop is part of what we’re evaluating.
+
+What You Need
+Your own computer with your preferred development environment
+Any AI tools you normally use (Claude, ChatGPT, Cursor, Copilot, v0, Bolt, etc.)
+A screen recording tool for your demo video (Loom, QuickTime, OBS — anything works)
+A way to capture your AI usage (screenshots, exported chat logs, or screen recording)
+The sample CSV data file included with this assessment
+
+The Assignment
+This is one continuous assignment with three phases, designed to mirror the full lifecycle of how a Product Engineer at NEWITY takes a feature from idea to delivery.
+
+Phase 1: Understand & Build
+Estimated Effort: 2.5 – 3 hours
+The Scenario
+Our loan operations team currently manages SBA document checklists using a shared spreadsheet. Each loan application requires up to 12 different document types. Three operations team members need to track the status of each document across active applications.
+The team has requested a tool that replaces this spreadsheet. They’ve mentioned they’d love to have: document status tracking per application, visibility into which applications have outstanding items, expiration date tracking for time-sensitive documents, email alerts when documents are about to expire, and a dashboard view for leadership to see overall pipeline health.
+You will not be able to build all of this in the allotted time. That is intentional.
+
+Context You’d Get From the Team
+In a normal sprint, you’d kick this off with a conversation with the requesting team. Since this is a take-home, here’s the context that conversation would give you:
+If You Asked...
+What You’d Hear
+How many active applications?
+About 50–75 at any given time.
+What’s the biggest pain point?
+Not knowing which applications are stalled waiting on documents. Things fall through the cracks.
+Which expirations matter most?
+Tax returns expire after 3 years, bank statements after 90 days. Those are the ones that cause the most rework.
+Who uses the spreadsheet?
+Two loan processors and one team lead. The team lead also reports up to leadership.
+What does leadership want?
+A weekly pipeline summary. Currently compiled manually into an email every Monday.
+How technical is the team?
+Not at all. They need something simple and intuitive. If it’s harder than the spreadsheet, they won’t use it.
+Any existing systems to integrate?
+No. This would be standalone for now. No APIs, no existing database.
+Is there a preference on technology?
+None. Whatever works. It just needs to run in a browser.
+
+This is the information you have. Make decisions with it. In the real job, you won’t always get perfect requirements — part of the role is making smart calls with incomplete information and explaining your reasoning.
+
+What to Build
+Using the sample CSV provided, build a working web-based tool that addresses the team’s needs. You choose what to build and what to cut. Use any language, framework, or stack you want.
+Your tool should:
+Run in a browser (local is fine — you don’t need to deploy it)
+Work with the provided sample data
+Be usable by the non-technical ops team described above
+Reflect deliberate decisions about scope and priorities
+
+Phase 2: Demo It
+Estimated Effort: 15 – 20 minutes
+Record a screen recording (Loom, QuickTime, OBS, etc.) walking through your tool. This is a stakeholder demo, not a code review. Present it as if you’re showing the non-technical ops team what you built for them.
+Your demo should cover:
+What the tool does and how it solves the team’s problem
+A live walkthrough of the tool in action with the sample data
+The scope decisions you made — what you built, what you cut, and why
+How you’d test this before shipping it (what would your QA plan look like?)
+What you’d build next if you had another sprint — and why that’s the priority
+An honest self-assessment: what’s good, what’s rough, what would you change?
+
+Why the self-assessment matters
+At NEWITY, Product Engineers own their features end-to-end. That means knowing what’s solid, what’s fragile, and what needs attention before it goes to users. We’re not looking for perfection — we’re looking for someone who can ship V1, clearly articulate its limitations, and have a plan for what comes next. The ability to critically evaluate your own work is as important as the ability to build it.
+
+Keep it under 10 minutes. If you can’t explain what you built, why, and what’s next in 10 minutes, that’s a signal to simplify. We demo multiple times a week at NEWITY — tight, clear communication is the norm.
+
+Phase 3: Show Your Process
+Estimated Effort: 15 – 30 minutes (capture as you go)
+Document how you used AI throughout the entire process — not just coding, but every phase from understanding the problem to delivering the solution. This is the most important deliverable for showing how you work.
+Your AI log should show usage across the full lifecycle:
+Phase
+How AI Might Be Used
+Understanding
+Analyzing the brief, asking clarifying questions, breaking down the problem, identifying edge cases
+Scoping & Planning
+Drafting a technical spec, prioritizing features, estimating effort, making architecture decisions
+Building
+Scaffolding code, generating components, debugging, refactoring, writing helper functions
+Testing
+Generating test cases, writing automated tests, identifying edge cases to test, creating test data
+Documentation
+Writing the README, drafting the self-assessment, structuring the demo narrative
+
+Format is up to you: exported chat history, annotated screenshots, a brief screen recording of your workflow, or a written summary. Any format works. We’re looking for evidence of an intentional AI workflow, not a formal report.
+
+What to Submit
+Send the following by the deadline:
+#
+Deliverable
+Details
+1
+Working Code
+GitHub repo (preferred) or zip file. Include a README with clear setup instructions. We should be able to run it locally in under 5 minutes.
+2
+Demo Video
+5–10 minute screen recording. Present to the business user, not engineers. Cover what it does, your scope decisions, your testing approach, your self-assessment, and what’s next.
+3
+AI Usage Log
+Evidence of how AI factored into each phase of the work — understanding, scoping, building, testing, and documentation. Any format.
+
+What We’re Looking For
+We’re not evaluating you on the specific technology you choose or how polished the final product looks. Here’s what matters:
+What We Value
+What That Looks Like
+AI as a Workflow
+You use AI across the full lifecycle — not just coding, but understanding the problem, planning, testing, and documentation.
+Scope Control
+You make deliberate decisions about what to build and what to cut. You explain those tradeoffs clearly.
+Full Lifecycle Thinking
+You think beyond just building. How would you test this? What breaks? What’s the plan for V2?
+Product Thinking
+You design for the end user. Your decisions reflect empathy for who will actually use this tool.
+Engineering Judgment
+You understand your code. You review AI output critically. You catch what’s not right.
+Communication
+Your demo is clear, confident, and aimed at the right audience. Your self-assessment is honest and useful.
+
+A Note on AI Usage
+We genuinely want you to use AI throughout this assessment. It’s not a trick, and it won’t count against you. The opposite, actually — we’re specifically interested in how you leverage AI as a thinking partner and force multiplier. The best engineers on our team treat AI as integral to their workflow. Show us yours.
+
+FAQs
+Can I use any programming language or framework?
+Yes. Whatever you’re most productive in. There are no technology requirements.
+
+Does the tool need to be deployed?
+No. Running locally is perfectly fine. Just make sure your README has clear setup instructions.
+
+How long should the demo video be?
+5–10 minutes. Keep it tight. If you can’t explain it in 10 minutes, that’s a signal to simplify.
+
+What if I want to spend more than 4 hours?
+Please don’t. We’re evaluating how you scope and prioritize under real constraints. Spending 8 hours undermines the signal we’re looking for.
+
+Should I write tests?
+Up to you. But we do want to hear your testing approach in the demo — even if it’s “here’s what I’d test and how, given more time.” Thinking about testing is required; writing automated tests is a bonus.
+
+How honest should the self-assessment be?
+Very. Telling us your tool is perfect is a red flag. Telling us exactly where it’s fragile and what you’d improve shows maturity and ownership.
+
+Can I ask questions during the assessment?
+You can email your recruiting contact for logistical questions (deadline, format, submission). We won’t answer questions about the scenario — make your best call and explain your reasoning.
+
+What format should the AI usage log be in?
+Whatever is easiest for you. Exported chat history, a screen recording, annotated screenshots, or a written summary. We care about the substance, not the format.
+
+
+Good luck. We’re excited to see how you work.
