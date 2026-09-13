@@ -36,7 +36,7 @@ OPEN_STATUSES: tuple[DocumentStatus, ...] = (
 
 
 class ApplicationListItem(BaseModel):
-    vendor: str
+    borrower: str
     application_date: date
     coordinator: str
     outstanding: int = Field(ge=0)
@@ -53,7 +53,7 @@ class ChecklistItem(BaseModel):
 
 class ApplicationDetail(BaseModel):
     application_id: str
-    vendor: str
+    borrower: str
     borrower_name: str
     loan_amount: int
     application_date: date
@@ -62,7 +62,7 @@ class ApplicationDetail(BaseModel):
 
 
 class ChecklistItemPatch(BaseModel):
-    vendor: str
+    borrower: str
     document_type: DocumentType
     status: Optional[DocumentStatus] = None
     comment: Optional[str] = None

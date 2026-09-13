@@ -136,9 +136,16 @@ def fetch_item_statuses(connection: sqlite3.Connection) -> list[sqlite3.Row]:
     ).fetchall()
 
 
-def fetch_application_by_vendor(
-    connection: sqlite3.Connection, vendor: str
+def _text_param(value: object, name: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise TypeError(f"{name} must be a non-empty string")
+    return value
+
+
+def fetch_application_by_borrower(
+    connection: sqlite3.Connection, borrower: str
 ) -> Optional[sqlite3.Row]:
+    borrower = _text_param(borrower, "borrower")
     return connection.execute(
         """
         SELECT application_id, business_name, borrower_name, loan_amount,
@@ -146,13 +153,14 @@ def fetch_application_by_vendor(
         FROM applications
         WHERE business_name = ?
         """,
-        (vendor,),
+        (borrower,),
     ).fetchone()
 
 
-def fetch_items_by_vendor(
-    connection: sqlite3.Connection, vendor: str
+def fetch_items_by_borrower(
+    connection: sqlite3.Connection, borrower: str
 ) -> list[sqlite3.Row]:
+    borrower = _text_param(borrower, "borrower")
     return connection.execute(
         """
         SELECT i.document_type, i.document_status, i.notes,
@@ -161,18 +169,21 @@ def fetch_items_by_vendor(
         JOIN applications a ON a.application_id = i.application_id
         WHERE a.business_name = ?
         """,
-        (vendor,),
+        (borrower,),
     ).fetchall()
 
 
 def update_checklist_item(
     connection: sqlite3.Connection,
-    vendor: str,
+    borrower: str,
     document_type: str,
     status: Optional[str] = None,
     comment: Optional[str] = None,
 ) -> bool:
+    borrower = _text_param(borrower, "borrower")
+    document_type = _text_param(document_type, "document_type")
     if status is not None:
+        status = _text_param(status, "status")
         cursor = connection.execute(
             """
             UPDATE checklist_items
@@ -182,9 +193,11 @@ def update_checklist_item(
                   SELECT application_id FROM applications WHERE business_name = ?
               )
             """,
-            (status, document_type, vendor),
+            (status, document_type, borrower),
         )
     else:
+        if not isinstance(comment, str):
+            raise TypeError("comment must be a string")
         cursor = connection.execute(
             """
             UPDATE checklist_items
@@ -194,6 +207,6 @@ def update_checklist_item(
                   SELECT application_id FROM applications WHERE business_name = ?
               )
             """,
-            (comment, document_type, vendor),
+            (comment, document_type, borrower),
         )
     return cursor.rowcount == 1
