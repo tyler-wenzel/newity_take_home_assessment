@@ -5,9 +5,12 @@ import {
   fetchApplication,
   patchChecklistItem,
   type ApplicationDetail,
+  type ChecklistItem as ChecklistItemData,
   type DocumentStatus,
 } from "../api/client"
-import { OPEN_STATUSES } from "../statusComments"
+import { OPEN_STATUSES, isCommentValidFor } from "../statusComments"
+
+type ChecklistItemChange = { status?: DocumentStatus; comment?: string }
 
 export function ChecklistPage() {
   const { applicationId } = useParams()
@@ -30,7 +33,7 @@ export function ChecklistPage() {
     return leftOpen - rightOpen
   })
 
-  async function update(documentType: string, change: { status?: DocumentStatus; comment?: string }) {
+  async function update(documentType: string, change: ChecklistItemChange) {
     if (!detail) {
       return
     }
@@ -48,6 +51,14 @@ export function ChecklistPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  function changeStatus(item: ChecklistItemData, status: DocumentStatus) {
+    const change: ChecklistItemChange = { status }
+    if (!isCommentValidFor(status, item.comment)) {
+      change.comment = ""
+    }
+    return update(item.document_type, change)
   }
 
   return (
@@ -80,7 +91,7 @@ export function ChecklistPage() {
                 key={item.document_type}
                 item={item}
                 disabled={saving}
-                onStatusChange={(status) => update(item.document_type, { status })}
+                onStatusChange={(status) => changeStatus(item, status)}
                 onCommentChange={(comment) => update(item.document_type, { comment })}
               />
             ))}

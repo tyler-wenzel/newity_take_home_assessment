@@ -69,9 +69,7 @@ class ChecklistItemPatch(BaseModel):
     comment: Optional[str] = None
 
     @model_validator(mode="after")
-    def exactly_one_update_field(self) -> "ChecklistItemPatch":
-        has_status = self.status is not None
-        has_comment = self.comment is not None
-        if has_status == has_comment:
-            raise ValueError("Provide exactly one of status or comment")
+    def at_least_one_update_field(self) -> "ChecklistItemPatch":
+        if self.status is None and self.comment is None:
+            raise ValueError("Provide status, comment, or both")
         return self

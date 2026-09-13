@@ -224,31 +224,30 @@ def update_checklist_item(
 ) -> bool:
     borrower = _text_param(borrower, "borrower")
     document_type = _text_param(document_type, "document_type")
+
+    assignments: list[str] = []
+    values: list[str] = []
     if status is not None:
-        status = _text_param(status, "status")
-        cursor = connection.execute(
-            """
-            UPDATE checklist_items
-            SET document_status = ?
-            WHERE document_type = ?
-              AND application_id = (
-                  SELECT application_id FROM applications WHERE business_name = ?
-              )
-            """,
-            (status, document_type, borrower),
-        )
-    else:
+        assignments.append("document_status = ?")
+        values.append(_text_param(status, "status"))
+    if comment is not None:
         if not isinstance(comment, str):
             raise TypeError("comment must be a string")
-        cursor = connection.execute(
-            """
-            UPDATE checklist_items
-            SET notes = ?
-            WHERE document_type = ?
-              AND application_id = (
-                  SELECT application_id FROM applications WHERE business_name = ?
-              )
-            """,
-            (comment, document_type, borrower),
-        )
+        assignments.append("notes = ?")
+        values.append(comment)
+    if not assignments:
+        raise TypeError("provide status, comment, or both")
+
+    # Only the column fragments above are interpolated; every value stays parameterised.
+    cursor = connection.execute(
+        f"""
+        UPDATE checklist_items
+        SET {", ".join(assignments)}
+        WHERE document_type = ?
+          AND application_id = (
+              SELECT application_id FROM applications WHERE business_name = ?
+          )
+        """,
+        (*values, document_type, borrower),
+    )
     return cursor.rowcount == 1

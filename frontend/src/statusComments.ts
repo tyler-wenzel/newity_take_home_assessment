@@ -51,6 +51,11 @@ export function hasComments(status: DocumentStatus): boolean {
   return COMMENTS_BY_STATUS[status].some((comment) => comment !== "")
 }
 
+/** Notes are written for one status, so they do not carry over to another. "" is valid everywhere. */
+export function isCommentValidFor(status: DocumentStatus, comment: string): boolean {
+  return COMMENTS_BY_STATUS[status].includes(comment)
+}
+
 export function commentsFor(status: DocumentStatus, current?: string): string[] {
   const options = COMMENTS_BY_STATUS[status]
   if (current !== undefined && !options.includes(current)) {
