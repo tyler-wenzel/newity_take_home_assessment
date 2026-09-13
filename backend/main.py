@@ -1,9 +1,19 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from controller import router
+from db import init_db
 
-app = FastAPI(title="Document Checklist")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="Document Checklist", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
